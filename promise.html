@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>promise demo</title>
+<style>
+</style>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+</head>
+<body>
+<script>
+var convertURL = 'https://p19441-jaxa/status';
+$.ajax(convertURL)
+.then(
+  function(response){
+console.log(response);
+    var d = new $.Deferred;
+    d.resolve(response);
+    return d.promise();
+  },
+  function(XMLHttpRequest, textStatus, errorThrown){
+    console.error('XMLHttpRequest : ' + XMLHttpRequest.status);
+    var d = new $.Deferred;
+    d.reject(XMLHttpRequest.status);
+    return d.promise();
+  }
+)
+.then(
+  function(response){
+console.log(response);
+  },
+  function(err){
+console.error(err);
+  }
+)
+
+/*
+const convertURL = 'http://localhost:8888/status';
+const checkStatusURL = 'http://localhost:8888/status';
+function delay(t) {
+    return new Promise(function(resolve) {
+        setTimeout(resolve, t);
+    });
+}
+function requestStatus(){
+  return new Promise(function(resolve,reject){
+    var result = new Object();
+    $.ajax(checkStatusURL)
+    .done(function(status){
+      result.promise = new Promise(function(resolve){
+        resolve(status);
+      });
+      result.status = status;
+      resolve(result);
+    })
+    .fail(function(XMLHttpRequest, textStatus, errorThrown){
+      reject(XMLHttpRequest, textStatus, errorThrown);
+    });
+  });
+}
+function checkStatus(){
+  return requestStatus()
+    .then(
+      function(result){
+        console.log('status:' + result.status);
+        switch(result.status){
+          case 'inProgress':
+            return delay(1000).then(checkStatus);
+          case 'success':
+            return result.promise;
+          default:
+            return result.promise;
+        }
+      },
+      function(XMLHttpRequest, textStatus, errorThrown){
+           showError(checkStatusURL, XMLHttpRequest, textStatus, errorThrown);
+        return new Promise(function(resolve,reject){
+              reject('ネットワークエラー:' + convertURL);
+            });
+      }
+    );
+};
+function showError(URL, XMLHttpRequest, textStatus, errorThrown){
+    console.error('URL : ' + URL);
+    console.error('XMLHttpRequest : ' + XMLHttpRequest.status);
+    console.error('textStatus     : ' + textStatus);
+    console.error('errorThrown    : ' + errorThrown.message);
+}
+// main --
+Promise.resolve($.ajax(convertURL))
+.then(
+  function(response){
+    console.log('response:' + response);
+    return checkStatus();
+  },
+  function(XMLHttpRequest, textStatus, errorThrown){
+     showError(convertURL, XMLHttpRequest, textStatus);
+    return new Promise(function(resolve,reject){
+      reject('ネットワークエラー:' + convertURL);
+    });
+  }
+)
+.then(function(result){
+    console.log('result:' + result);
+    return new Promise(function(resolve,reject){
+      if(result === 'success'){
+        // ダウンロード処理
+        resolve(result);
+      } else {
+        reject(result);
+      }
+    });
+})
+.then(function(response){
+  console.log(response);
+  console.log('All done!');
+  // ダウンロード
+})
+.catch(function(error){
+  console.error(error);
+});
+*/
+// -- main
+</script>
+</body>
+</html>
